@@ -22,6 +22,9 @@ bounding_box_detection_model = MTCNN(keep_all=True, device='cpu', select_largest
 # For a model pretrained on VGGFace2
 encoding_model = InceptionResnetV1(pretrained='vggface2').eval().to(device=device)
 
+# Load the classifier network
+classifier_network = torch.load("SavedModels/Iteration10000")
+
 threshold = 0.7
 face_is_encoded = False
 
@@ -85,13 +88,15 @@ while rval:
         #Get the bounding box
         boxed_frame = get_frame_with_bounding_boxes(frame)
         #Get the cropped image
+        print(frame)
         cropped_image = encoding_detection_model(frame)
         #Get the encoding of the cropped image
         image_encoding = encoding_model(torch.unsqueeze(cropped_image.to(device=device), dim=0))
         #Get the encoding distances
-        encoding_distance = get_encoding_distance(image_encoding, encoding_saved_image)
+        # encoding_distance = get_encoding_distance(image_encoding, encoding_saved_image)
+        prediction = classifier_network(encoding_saved_image, image_encoding)
         #Determine if the person is verified
-        print("Person is verified: {0}".format(determine_if_verified(encoding_distance, threshold=threshold)))
+        print("Person is verified: {0}".format(torch.squeeze(prediction)))
     except:
         if not face_is_encoded:
             print("A face was not encoded at the start of the program")

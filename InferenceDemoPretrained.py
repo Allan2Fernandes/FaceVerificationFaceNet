@@ -86,7 +86,6 @@ while rval:
     boxed_frame = frame
     try:
         #Get the bounding box
-        print(frame)
         boxed_frame = get_frame_with_bounding_boxes(frame)
         #Get the cropped image
         cropped_image = encoding_detection_model(frame)

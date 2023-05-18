@@ -1,5 +1,12 @@
-import sys
+"""
+To use this script, run the command
+python GetEncodingFromImage.py img1.png encoding1.txt
 
+The script will open the png file, detect a face and encode the face in img1.png
+and then write the encoding to encoding1.txt
+"""
+
+import sys
 import torch
 from torchvision import transforms
 from PIL import Image

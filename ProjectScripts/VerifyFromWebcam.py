@@ -1,5 +1,12 @@
-import sys
+"""
+To execute the script, run the command
+python VerifyFromWebcam.py encoding_example.txt
 
+where encoding_example.txt is a text file with the encoding values for the person's face you want to verify
+"""
+
+
+import sys
 import cv2
 from facenet_pytorch import InceptionResnetV1, MTCNN
 import torch
@@ -81,17 +88,10 @@ vc.set(3, width)
 vc.set(4, height)
 
 if vc.isOpened():
-    """
-    LOOK DIRECTLY INTO THE CAMERA AT THE START SO IT GETS AN ACCURATE BASELINE ENCODING
-    Use the first frame to get an encoding of the person's face. 
-    Then save that encoding. This encoding is what future images will be compared to. 
-    Normally this is the encoding that would be saved in the database and then compared to later
-    """
     try:
         rval, frame = vc.read()
-
     except:
-        print("No baseline encoding available. Make sure it has a face to encode at the very start of the program so it has an encoding to compare to.")
+        print("Webcam error")
 else:
     rval = False
 

@@ -1,3 +1,12 @@
+"""
+To execute this file, run the following command:
+python GetSimilarityScoreFromEncoding.py encoding1.txt encoding2.txt
+
+The script will feed both encodings to a classifier model which will return a score from 0-1
+0 means the 2 encodings are of 2 different people
+1 means the encodings are of the same person.
+"""
+
 import numpy as np
 import sys
 

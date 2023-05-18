@@ -86,9 +86,9 @@ while rval:
     boxed_frame = frame
     try:
         #Get the bounding box
+        print(frame)
         boxed_frame = get_frame_with_bounding_boxes(frame)
         #Get the cropped image
-        print(frame)
         cropped_image = encoding_detection_model(frame)
         #Get the encoding of the cropped image
         image_encoding = encoding_model(torch.unsqueeze(cropped_image.to(device=device), dim=0))

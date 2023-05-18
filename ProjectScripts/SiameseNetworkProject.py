@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-class SiameseNetwork(nn.Module):
+class SiameseNetworkProject(nn.Module):
     def __init__(self, device):
-        super(SiameseNetwork, self).__init__()
+        super(SiameseNetworkProject, self).__init__()
         self.hidden_layer = nn.Linear(in_features=512, out_features=128, device=device)
         self.classifier = nn.Linear(in_features=128,out_features=1, device=device)
         nn.init.xavier_uniform_(self.classifier.weight)

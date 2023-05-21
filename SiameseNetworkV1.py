@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
-
-class SiameseNetworkProject(nn.Module):
+# 93-94% accurate
+class SiameseNetworkV1(nn.Module):
     def __init__(self, device):
-        super(SiameseNetworkProject, self).__init__()
+        super(SiameseNetworkV1, self).__init__()
         self.hidden_layer1 = nn.Linear(in_features=512, out_features=256, device=device)
         self.hidden_layer2 = nn.Linear(in_features=256, out_features=128, device=device)
         self.hidden_layer3 = nn.Linear(in_features=128, out_features=64, device=device)
-        self.classifier = nn.Linear(in_features=64, out_features=1, device=device)
+        self.classifier = nn.Linear(in_features=64,out_features=1, device=device)
         nn.init.xavier_uniform_(self.classifier.weight)
         nn.init.xavier_uniform_(self.hidden_layer1.weight)
         nn.init.xavier_uniform_(self.hidden_layer2.weight)
@@ -18,7 +18,7 @@ class SiameseNetworkProject(nn.Module):
         self.activation = nn.Sigmoid()
 
     def forward(self, left_encoding, right_encoding):
-        distance_tensor = torch.abs(right_encoding - left_encoding)
+        distance_tensor = torch.abs(right_encoding-left_encoding)
         hidden_activated_layer1 = self.hidden_layer_activation1(self.hidden_layer1(distance_tensor))
         hidden_activated_layer2 = self.hidden_layer_activation2(self.hidden_layer2(hidden_activated_layer1))
         hidden_activated_layer3 = self.hidden_layer_activation3(self.hidden_layer3(hidden_activated_layer2))
@@ -26,3 +26,8 @@ class SiameseNetworkProject(nn.Module):
         output = self.activation(output_unactivated)
         return output
 
+    def freeze_model(self, encoder):
+        for param in encoder.parameters():
+            param.requires_grad = False
+            pass
+        pass

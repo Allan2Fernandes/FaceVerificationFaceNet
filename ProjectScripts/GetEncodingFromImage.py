@@ -63,7 +63,6 @@ permuted_image = permuted_image[:,:,:3]
 cropped_image = detect_face_in_image(image_tensor=permuted_image)
 #Encode the image
 encoded_image = encode_face(cropped_image=cropped_image)
-print(encoded_image.shape)
 #Write to a text file
 file = open(sys.argv[2], 'w')
 for i in range(512):

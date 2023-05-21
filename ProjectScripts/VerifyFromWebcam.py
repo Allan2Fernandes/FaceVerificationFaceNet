@@ -36,7 +36,7 @@ encoding_model = InceptionResnetV1(pretrained='vggface2').eval().to(device=devic
 
 #Load in the classifier
 classifier = SiameseNetworkProject.SiameseNetworkProject(device)
-classifier.load_state_dict(torch.load('../SavedModels/classifier.pt'))
+classifier.load_state_dict(torch.load('../SavedModelsV1/m_hidden_layers/Iteration3999Weights.pt'))
 
 threshold = 0.7
 #Feel free to modify this value

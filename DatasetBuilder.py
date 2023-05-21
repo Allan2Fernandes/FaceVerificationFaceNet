@@ -5,6 +5,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = False
 import os
 import random
 import torchvision.transforms as transforms
+from facenet_pytorch import InceptionResnetV1
 
 class DatasetBuilder:
     def __init__(self, base_directory_path, batch_size, device):
@@ -56,6 +57,9 @@ class DatasetBuilder:
             list_images_class1 = os.listdir(class1_path)
             # Pick a random image in that class for the left network
             left_image = self.get_random_image(list_of_images=list_images_class1)
+            # Convert to tensors
+            left_image = self.transform_image(Image.open(os.path.join(class1_path, left_image))).to(self.device)
+
             # Pick a second random class excluding the previous class
             class2_name = self.get_random_class_excluding_one(excluded_element=class1_name)
             # Get class path
@@ -65,8 +69,8 @@ class DatasetBuilder:
             # Pick a random image in this class for the right network
             right_image = self.get_random_image(list_of_images=list_images_class2)
             # Convert to tensors
-            left_image = self.transform_image(Image.open(os.path.join(class1_path, left_image))).to(self.device)
             right_image = self.transform_image(Image.open(os.path.join(class2_path, right_image))).to(self.device)
+
             left_images.append(torch.unsqueeze(left_image, dim=0))
             right_images.append(torch.unsqueeze(right_image, dim=0))
             pass

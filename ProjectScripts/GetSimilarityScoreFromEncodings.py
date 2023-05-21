@@ -9,7 +9,6 @@ The script will feed both encodings to a classifier model which will return a sc
 
 import numpy as np
 import sys
-
 import torch
 import SiameseNetworkProject
 
@@ -31,7 +30,7 @@ def get_encoding_from_path(path, device):
 
 #Load in the classifier
 classifier = SiameseNetworkProject.SiameseNetworkProject(device)
-classifier.load_state_dict(torch.load('../SavedModels/classifier.pt'))
+classifier.load_state_dict(torch.load('../SavedModelsV1/m_hidden_layers/Iteration3999Weights.pt'))
 
 #Build encoding1
 encoding1_path = sys.argv[1]

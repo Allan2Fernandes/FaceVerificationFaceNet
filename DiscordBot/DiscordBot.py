@@ -49,6 +49,6 @@ async def verify_face_against_base_line(ctx):
     await ctx.send("Distance = {0} ".format(distance))
     await ctx.send("Classification Probability = {0}".format(str(torch.squeeze(classification).item())))
 
-Token = "TOKEN"
+Token = "MTAwMjYxODA1Nzg5NTcxMDg3MQ.Ghu76b.JkJI1OXRMwgBe5nfi06hTMw1CT1wcciwhvjfwI"
 
 bot.run(token=Token)

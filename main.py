@@ -13,16 +13,16 @@ Dataset -   it will be a tuple of batch x (img1, img2, label)
 """
 import sys
 import torch
-import SiameseNetwork as sn
+import SiameseNetworkV1 as sn
 import DatasetBuilder as db
 import TrainModel as tm
 
 base_directory_path = "D:/Datasets/vggface2_224"
-batch_size = 64
+batch_size = 32
 device = torch.device('cuda')
 
-siamese_network = sn.SiameseNetwork(device=device)
+siamese_network = sn.SiameseNetworkV1(device=device)
 database_builder = db.DatasetBuilder(base_directory_path=base_directory_path, batch_size=batch_size, device=device)
 model_trainer = tm.TrainModel(dataset_builder=database_builder, siamese_network=siamese_network, device=device)
 model_trainer.initialize_optimizer_loss_functions()
-model_trainer.train_model(iterations=sys.maxsize, device=device)
+model_trainer.train_model(iterations=10000, directory_to_save="SavedModelsV1/m_hidden_layers", device=device)

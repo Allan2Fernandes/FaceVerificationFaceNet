@@ -10,7 +10,6 @@ import sys
 import torch
 from torchvision import transforms
 from PIL import Image
-import matplotlib.pyplot as plt
 from facenet_pytorch import InceptionResnetV1, MTCNN
 #sys.argv[1] = image file path
 

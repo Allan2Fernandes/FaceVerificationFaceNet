@@ -40,4 +40,4 @@ encoding2_path = sys.argv[2]
 encoding2 = get_encoding_from_path(encoding2_path, device)
 
 classification_score = classifier(encoding1, encoding2)
-print(classification_score)
+print(classification_score.item())

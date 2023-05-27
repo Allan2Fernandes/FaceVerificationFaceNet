@@ -11,7 +11,7 @@ import torch
 from torchvision import transforms
 from PIL import Image
 from facenet_pytorch import InceptionResnetV1, MTCNN
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 #sys.argv[1] = image file path
 
 if torch.cuda.is_available():
@@ -62,12 +62,12 @@ image_tensor = convert_image_file_to_tensor(image_file=image_file)
 
 permuted_image = (torch.permute(image_tensor, (1, 2, 0)) * 255).int()
 permuted_image = permuted_image[:,:,:3]
-plt.imshow(permuted_image)
-plt.show()
+# plt.imshow(permuted_image)
+# plt.show()
 # Crop the face
 cropped_image = detect_face_in_image(image_tensor=permuted_image)
-plt.imshow(torch.permute(cropped_image, dims=(1,2,0)))
-plt.show()
+# plt.imshow(torch.permute(cropped_image, dims=(1,2,0)))
+# plt.show()
 #Encode the image
 encoded_image = encode_face(cropped_image=cropped_image)
 #Write to a text file

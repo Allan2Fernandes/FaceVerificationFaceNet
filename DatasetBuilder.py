@@ -14,7 +14,7 @@ class DatasetBuilder:
         self.batch_size = batch_size
         self.device = device
         self.transform_image = transforms.Compose([
-            transforms.Resize(128),
+            transforms.Resize(160),
             transforms.ToTensor()
         ])
         pass

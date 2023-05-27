@@ -8,10 +8,10 @@ class TrainModel:
         self.siamese_network = siamese_network
         self.device = device
         self.siamese_network.to(device)
-        self.learning_rate0 = 0.0065
-        self.learning_rate1 = 0.0001
-        self.learning_rate2 = 0.000001
-        self.learning_rate3 = 0.0000001
+        self.learning_rate0 = 0.0001
+        self.learning_rate1 = 0.00005
+        self.learning_rate2 = 0.00002
+        self.learning_rate3 = 0.000008
         self.selected_learning_rate = self.learning_rate0
         print("Number of parameters in the model: {0}".format(self.get_n_params(siamese_network)))
         self.losses = []
@@ -54,9 +54,9 @@ class TrainModel:
     def train_model(self, iterations, directory_to_save, device):
         encoder_model = InceptionResnetV1(pretrained='vggface2').eval().to(device=device)
         self.freeze_model(encoder_model)
-        for iteration in range(iterations):
+        for iteration in range(1, iterations+1):
             # Save the model every 5000 iterations
-            if (iteration+1) % 2000 == 0:
+            if (iteration) % 2000 == 0 and iteration > 0:
                 torch.save(self.siamese_network.state_dict(), f"{directory_to_save}/Iteration{iteration}Weights.pt")
                 pass
 
@@ -98,13 +98,13 @@ class TrainModel:
             self.optimizer.step()
 
             if iteration%100 > 60:
-                if average_loss < 0.22 and self.selected_learning_rate == self.learning_rate0:
+                if average_loss < 0.16 and self.selected_learning_rate == self.learning_rate0:
                     self.selected_learning_rate = self.learning_rate1
                     self.set_new_learning_rate(self.selected_learning_rate)
-                elif average_loss < 0.17 and self.selected_learning_rate == self.learning_rate1:
+                elif average_loss < 0.14 and self.selected_learning_rate == self.learning_rate1:
                     self.selected_learning_rate = self.learning_rate2
                     self.set_new_learning_rate(self.selected_learning_rate)
-                elif average_loss < 0.10 and self.selected_learning_rate == self.learning_rate2:
+                elif average_loss < 0.12 and self.selected_learning_rate == self.learning_rate2:
                     self.selected_learning_rate = self.learning_rate3
                     self.set_new_learning_rate(self.selected_learning_rate)
 

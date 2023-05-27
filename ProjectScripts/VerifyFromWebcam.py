@@ -22,9 +22,10 @@ else:
     device = torch.device('cpu')
 
 device = torch.device('cpu')
+cropped_image_size = 160
 #Initialize the encoding and detection models and constants
 encoding_detection_model = MTCNN(
-    image_size=128, margin=0, min_face_size=20,
+    image_size=cropped_image_size, margin=0, min_face_size=20,
     thresholds=[0.6, 0.7, 0.7], factor=0.709, post_process=True,
     device='cpu', select_largest=True
 )
@@ -61,7 +62,7 @@ def get_frame_with_bounding_boxes(frame):
 
 convert_tensor = transforms.Compose([
     transforms.ToTensor(),
-    transforms.CenterCrop(128)
+    transforms.CenterCrop(cropped_image_size)
 ])
 
 def get_encoding_from_path(path, device):

@@ -19,7 +19,7 @@ class SiameseNetworkV3(nn.Module):
         self.max_pool4 = nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
         self.activation4 = nn.ReLU()
 
-        self.encoing_layer = nn.Linear(in_features=36864, out_features=512, bias=True)
+        self.encoding_layer = nn.Linear(in_features=36864, out_features=512, bias=True)
         self.activation5 = nn.ReLU()
 
         self.classification_layer = nn.Linear(in_features=512, out_features=1)
@@ -45,7 +45,7 @@ class SiameseNetworkV3(nn.Module):
         x = self.activation4(x)
 
         x = x.view(x.size(0), -1)
-        x = self.encoing_layer(x)
+        x = self.encoding_layer(x)
         x = self.activation5(x)
         return x
 

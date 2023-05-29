@@ -8,10 +8,10 @@ class TrainModel:
         self.siamese_network = siamese_network
         self.device = device
         self.siamese_network.to(device)
-        self.learning_rate0 = 0.0001
-        self.learning_rate1 = 0.00005
-        self.learning_rate2 = 0.00002
-        self.learning_rate3 = 0.000008
+        self.learning_rate0 = 0.01
+        self.learning_rate1 = 0.002
+        self.learning_rate2 = 0.0004
+        self.learning_rate3 = 0.00008
         self.selected_learning_rate = self.learning_rate0
         print("Number of parameters in the model: {0}".format(self.get_n_params(siamese_network)))
         self.losses = []
@@ -98,13 +98,13 @@ class TrainModel:
             self.optimizer.step()
 
             if iteration%100 > 60:
-                if average_loss < 0.16 and self.selected_learning_rate == self.learning_rate0:
+                if average_loss < 0.15 and self.selected_learning_rate == self.learning_rate0:
                     self.selected_learning_rate = self.learning_rate1
                     self.set_new_learning_rate(self.selected_learning_rate)
-                elif average_loss < 0.14 and self.selected_learning_rate == self.learning_rate1:
+                elif average_loss < 0.13 and self.selected_learning_rate == self.learning_rate1:
                     self.selected_learning_rate = self.learning_rate2
                     self.set_new_learning_rate(self.selected_learning_rate)
-                elif average_loss < 0.12 and self.selected_learning_rate == self.learning_rate2:
+                elif average_loss < 0.11 and self.selected_learning_rate == self.learning_rate2:
                     self.selected_learning_rate = self.learning_rate3
                     self.set_new_learning_rate(self.selected_learning_rate)
 

@@ -30,7 +30,7 @@ def get_encoding_from_path(path, device):
 
 #Load in the classifier
 classifier = SiameseNetworkProject.SiameseNetworkProject(device)
-classifier.load_state_dict(torch.load('../SavedModelsV1/m_hidden_layers/Iteration5999Weights.pt', map_location=device))
+classifier.load_state_dict(torch.load('../SavedModelsV1/m_hidden_layers/Iteration10000Weights.pt', map_location=device))
 
 #Build encoding1
 encoding1_path = sys.argv[1]
@@ -38,6 +38,7 @@ encoding1 = get_encoding_from_path(encoding1_path, device)
 #Build encoding2
 encoding2_path = sys.argv[2]
 encoding2 = get_encoding_from_path(encoding2_path, device)
-
+classifier.eval()
+classifier.to(device=device)
 classification_score = classifier(encoding1, encoding2)
 print(classification_score.item())

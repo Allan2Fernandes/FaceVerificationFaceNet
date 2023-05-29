@@ -15,14 +15,20 @@ class SiameseNetworkV1(nn.Module):
         self.hidden_layer_activation1 = nn.LeakyReLU(negative_slope=0.01)
         self.hidden_layer_activation2 = nn.LeakyReLU(negative_slope=0.01)
         self.hidden_layer_activation3 = nn.LeakyReLU(negative_slope=0.01)
+        self.bn1 = nn.BatchNorm1d(num_features=256)
+        self.bn2 = nn.BatchNorm1d(num_features=128)
+        self.bn3 = nn.BatchNorm1d(num_features=128)
         self.activation = nn.Sigmoid()
 
     def forward(self, left_encoding, right_encoding):
         distance_tensor = torch.abs(right_encoding-left_encoding)
         hidden_activated_layer1 = self.hidden_layer_activation1(self.hidden_layer1(distance_tensor))
-        hidden_activated_layer2 = self.hidden_layer_activation2(self.hidden_layer2(hidden_activated_layer1))
-        hidden_activated_layer3 = self.hidden_layer_activation3(self.hidden_layer3(hidden_activated_layer2))
-        output_unactivated = self.classifier(hidden_activated_layer3)
+        hidden_activated_layer1_norm = self.bn1(hidden_activated_layer1)
+        hidden_activated_layer2 = self.hidden_layer_activation2(self.hidden_layer2(hidden_activated_layer1_norm))
+        hidden_activated_layer2_norm = self.bn2(hidden_activated_layer2)
+        hidden_activated_layer3 = self.hidden_layer_activation3(self.hidden_layer3(hidden_activated_layer2_norm))
+        hidden_activated_layer3_norm = self.bn3(hidden_activated_layer3)
+        output_unactivated = self.classifier(hidden_activated_layer3_norm)
         output = self.activation(output_unactivated)
         return output
 

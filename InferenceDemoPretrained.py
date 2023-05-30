@@ -2,6 +2,7 @@ import cv2
 from facenet_pytorch import InceptionResnetV1, MTCNN
 import torch
 from torchvision import transforms
+import SiameseNetworkV1
 
 if torch.cuda.is_available():
     device = torch.device('cuda')
@@ -23,7 +24,10 @@ bounding_box_detection_model = MTCNN(keep_all=True, device='cpu', select_largest
 encoding_model = InceptionResnetV1(pretrained='vggface2').eval().to(device=device)
 
 # Load the classifier network
-classifier_network = torch.load("SavedModels/Iteration10000")
+classifier = SiameseNetworkV1.SiameseNetworkV1(device)
+classifier.load_state_dict(torch.load('./SavedModelsV1/m_hidden_layers/Iteration10000Weights.pt', map_location=device))
+classifier.eval()
+classifier.to(device=device)
 
 threshold = 0.7
 face_is_encoded = False
@@ -91,9 +95,11 @@ while rval:
         cropped_image = encoding_detection_model(frame)
         #Get the encoding of the cropped image
         image_encoding = encoding_model(torch.unsqueeze(cropped_image.to(device=device), dim=0))
+        print(image_encoding.shape)
+        print(encoding_saved_image.shape)
         #Get the encoding distances
         # encoding_distance = get_encoding_distance(image_encoding, encoding_saved_image)
-        prediction = classifier_network(encoding_saved_image, image_encoding)
+        prediction = classifier(encoding_saved_image, image_encoding)
         #Determine if the person is verified
         print("Person is verified: {0}".format(torch.squeeze(prediction)))
     except:

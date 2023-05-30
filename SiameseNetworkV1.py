@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-# 93-94% accurate
+# 95.5-96% accurate
 class SiameseNetworkV1(nn.Module):
     def __init__(self, device):
         super(SiameseNetworkV1, self).__init__()

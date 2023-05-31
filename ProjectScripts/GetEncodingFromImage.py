@@ -65,17 +65,21 @@ permuted_image = permuted_image[:,:,:3]
 # plt.imshow(permuted_image)
 # plt.show()
 # Crop the face
-cropped_image = detect_face_in_image(image_tensor=permuted_image)
-# plt.imshow(torch.permute(cropped_image, dims=(1,2,0)))
-# plt.show()
-#Encode the image
-encoded_image = encode_face(cropped_image=cropped_image)
-#Write to a text file
-file = open(sys.argv[2], 'w')
-for i in range(512):
-    file.write(str(encoded_image[:, i].item()))
-    file.write('\n')
-file.close()
+try:
+    cropped_image = detect_face_in_image(image_tensor=permuted_image)
+    # plt.imshow(torch.permute(cropped_image, dims=(1,2,0)))
+    # plt.show()
+    # Encode the image
+    encoded_image = encode_face(cropped_image=cropped_image)
+    # Write to a text file
+    file = open(sys.argv[2], 'w')
+    for i in range(512):
+        file.write(str(encoded_image[:, i].item()))
+        file.write('\n')
+    file.close()
+except:
+    print("No face to encode")
+
 
 
 

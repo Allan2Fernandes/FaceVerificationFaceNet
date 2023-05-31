@@ -11,6 +11,7 @@ import numpy as np
 import sys
 import torch
 import SiameseNetworkProject
+import os
 
 if torch.cuda.is_available():
     device = torch.device('cuda')
@@ -29,8 +30,9 @@ def get_encoding_from_path(path, device):
     return encoding
 
 #Load in the classifier
+script_directory = os.getcwd()
 classifier = SiameseNetworkProject.SiameseNetworkProject(device)
-classifier.load_state_dict(torch.load('../SavedModelsV1/m_hidden_layers/Iteration10000Weights.pt', map_location=device))
+classifier.load_state_dict(torch.load(os.path.join(script_directory, '../SavedModelsV1/m_hidden_layers/Iteration10000Weights.pt'), map_location=device))
 
 #Build encoding1
 encoding1_path = sys.argv[1]

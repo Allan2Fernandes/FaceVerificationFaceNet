@@ -32,7 +32,6 @@ def get_encoding_from_path(path, device):
 #Load in the classifier
 current_file_path = os.path.realpath(__file__)
 parent_path = os.path.dirname(current_file_path)
-print(parent_path)
 classifier = SiameseNetworkProject.SiameseNetworkProject(device)
 classifier.load_state_dict(torch.load(os.path.join(parent_path, '../SavedModelsV1/m_hidden_layers/Iteration10000Weights.pt'), map_location=device))
 

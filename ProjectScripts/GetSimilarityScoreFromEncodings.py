@@ -30,9 +30,11 @@ def get_encoding_from_path(path, device):
     return encoding
 
 #Load in the classifier
-script_directory = os.getcwd()
+current_file_path = os.path.realpath(__file__)
+parent_path = os.path.dirname(current_file_path)
+print(parent_path)
 classifier = SiameseNetworkProject.SiameseNetworkProject(device)
-classifier.load_state_dict(torch.load(os.path.join(script_directory, '../SavedModelsV1/m_hidden_layers/Iteration10000Weights.pt'), map_location=device))
+classifier.load_state_dict(torch.load(os.path.join(parent_path, '../SavedModelsV1/m_hidden_layers/Iteration10000Weights.pt'), map_location=device))
 
 #Build encoding1
 encoding1_path = sys.argv[1]

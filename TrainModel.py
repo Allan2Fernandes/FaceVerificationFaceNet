@@ -1,6 +1,7 @@
 import torch
 from facenet_pytorch import InceptionResnetV1
 from torcheval.metrics import BinaryAccuracy
+from collections import namedtuple
 
 class TrainModel:
     def __init__(self, dataset_builder, siamese_network, device):
@@ -25,6 +26,15 @@ class TrainModel:
                 nn = nn * s
             pp += nn
         return pp
+
+    def save_training_results(self, all_stats_tuple_list):
+        file = open("all_stats.txt", 'w')
+        file.write("Loss" + "," + "Accuracy" + "," + "Learning_rate")
+        file.write('\n')
+        for i in range(len(all_stats_tuple_list)):
+            file.write(str(str(all_stats_tuple_list[i].avg_loss) + "," + str(all_stats_tuple_list[i].accuracy) + "," + str(all_stats_tuple_list[i].learning_rate)))
+            file.write('\n')
+        file.close()
 
     def initialize_optimizer_loss_functions(self):
         self.loss_function = torch.nn.BCELoss()
@@ -54,7 +64,10 @@ class TrainModel:
     def train_model(self, iterations, directory_to_save, device):
         encoder_model = InceptionResnetV1(pretrained='vggface2').eval().to(device=device)
         self.freeze_model(encoder_model)
+        all_stats_tracking = []
+        Statistics = namedtuple('stats', ['avg_loss', 'accuracy', 'learning_rate'])
         for iteration in range(1, iterations+1):
+
             # Save the model every 5000 iterations
             if (iteration) % 2000 == 0 and iteration > 0:
                 torch.save(self.siamese_network.state_dict(), f"{directory_to_save}/Iteration{iteration}Weights.pt")
@@ -64,6 +77,7 @@ class TrainModel:
             if iteration % 100 == 0:
                 self.reset_metric()
                 self.losses = []
+
                 pass
 
             # Reset the optimizer gradients
@@ -76,7 +90,7 @@ class TrainModel:
                 print("Truncated image error")
                 continue
 
-            # Encode the left and right encodings and don't use grad
+            # Encode the left and right encodings and don't track gradients
             with torch.no_grad():
                 left_encoding = encoder_model(left_batch)
                 right_encoding = encoder_model(right_batch)
@@ -89,9 +103,16 @@ class TrainModel:
             # Calculate loss on prediction
             loss = self.loss_function(siamese_network_prediction, labels)
             self.losses.append(loss)
+
             accuracy = self.binary_accuracy_metric(siamese_network_prediction, labels)
             average_loss = torch.mean(torch.stack(self.losses)).item()
-            print("Loss for iteration: {0} = {1} || Accuracy = {2} || lr = {3}".format(iteration, average_loss, accuracy, self.selected_learning_rate))
+
+            #Statistics
+
+            stats = Statistics(average_loss, accuracy.item(), self.selected_learning_rate)
+            all_stats_tracking.append(stats)
+            print("Loss for iteration: {0} = {1} || Accuracy = {2} || lr = {3}"
+                  .format(iteration, average_loss, accuracy, self.selected_learning_rate))
             # Differentiate loss with respect to parameters
             loss.backward()
             # Gradient descent step
@@ -107,8 +128,8 @@ class TrainModel:
                 elif average_loss < 0.11 and self.selected_learning_rate == self.learning_rate2:
                     self.selected_learning_rate = self.learning_rate3
                     self.set_new_learning_rate(self.selected_learning_rate)
-
             pass
+        self.save_training_results(all_stats_tuple_list=all_stats_tracking)
         pass
 
     # noinspection DuplicatedCode
@@ -122,6 +143,7 @@ class TrainModel:
             # Reset the metric every few iterations
             if iteration % 100 == 0:
                 self.reset_metric()
+                self.losses = []
 
             # Reset the optimizer gradients
             self.optimizer.zero_grad()
@@ -132,7 +154,6 @@ class TrainModel:
             except:
                 print("Truncated image error")
                 continue
-
             # Feed the left and right batches into the classifier model
             siamese_network_prediction = self.siamese_network(left_batch, right_batch)
 
@@ -142,8 +163,11 @@ class TrainModel:
             """
             # Calculate loss on prediction
             loss = self.loss_function(siamese_network_prediction, labels)
+            self.losses.append(loss)
             accuracy = self.binary_accuracy_metric(siamese_network_prediction, labels)
-            print("Loss for iteration: {0} = {1} || Accuracy = {2}".format(iteration, loss, accuracy))
+            average_loss = torch.mean(torch.stack(self.losses)).item()
+            accuracy = self.binary_accuracy_metric(siamese_network_prediction, labels)
+            print("Loss for iteration: {0} = {1} || Accuracy = {2}".format(iteration, average_loss, accuracy))
             # Differentiate loss with respect to parameters
             loss.backward()
             # Gradient descent step

@@ -43,5 +43,6 @@ encoding2_path = sys.argv[2]
 encoding2 = get_encoding_from_path(encoding2_path, device)
 classifier.eval()
 classifier.to(device=device)
-classification_score = classifier(encoding1, encoding2)
+with torch.no_grad():
+    classification_score = classifier(encoding1, encoding2)
 print(classification_score.item())

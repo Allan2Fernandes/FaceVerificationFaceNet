@@ -31,10 +31,11 @@ encoding_detection_model = MTCNN(
     thresholds=[0.6, 0.7, 0.7], factor=0.709, post_process=True,
     device='cpu', select_largest=True
 )
+encoding_detection_model.eval()
 
 # For a model pretrained on VGGFace2
 encoding_model = InceptionResnetV1(pretrained='vggface2').eval().to(device=device)
-
+encoding_model.eval()
 # Load the classifier network
 #classifier_network = torch.load(classifier_model_path)
 
@@ -47,11 +48,13 @@ def convert_image_file_to_tensor(image_file):
     return convert_tensor(image_file)
 
 def detect_face_in_image(image_tensor):
-    cropped_image = encoding_detection_model(image_tensor, return_prob = False)
+    with torch.no_grad():
+        cropped_image = encoding_detection_model(image_tensor, return_prob = False)
     return cropped_image
 
 def encode_face(cropped_image):
-    encoding = encoding_model(torch.unsqueeze(cropped_image.to(device=device), dim=0))
+    with torch.no_grad():
+        encoding = encoding_model(torch.unsqueeze(cropped_image.to(device=device), dim=0))
     return encoding
 
 image_path = sys.argv[1]
@@ -73,7 +76,7 @@ try:
     encoded_image = encode_face(cropped_image=cropped_image)
     # Write to a text file
     file = open(sys.argv[2], 'w')
-    for i in range(512):
+    for i in range(encoded_image.shape[1]):
         file.write(str(encoded_image[:, i].item()))
         file.write('\n')
     file.close()
